@@ -108,7 +108,9 @@ class Scene {
                 intersections ~= current;
         }
 
-        if(intersections.length == 0) return SamplingResult(Vector!float(0,0,255), currentTask.weight);
+        if(intersections.length == 0) 
+            return SamplingResult(Vector!float(0,0,0).scale(currentTask.weight),
+                                  currentTask.weight);
 
         auto intersection = (minPos!("a.distance < b.distance")(intersections))[0];
 
@@ -116,6 +118,16 @@ class Scene {
         Vector!float pos = currentTask.origin + currentTask.direction.scale(intersection.distance);
         Vector!float reflectedDirection = currentTask.direction - 
             intersection.normal.scale(2*intersection.normal.dot(currentTask.direction));
+
+        // Adding the reflected rays to be traced in the list of tasks
+        if(intersection.reflectionCoefficient > EPSILON) {
+            SamplingTask reflectedRay = SamplingTask(
+                                            currentTask.weight*intersection.reflectionCoefficient,
+                                            pos, 
+                                            reflectedDirection,
+                                            currentTask.n);
+            tasks.insert(reflectedRay);
+        }
 
         /* We want to color the point depending on how
            directly it is hit by the light, this is indicated by

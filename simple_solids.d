@@ -38,9 +38,9 @@ class CheckeredPlane : SceneObject {
         auto position = origin + direction.scale(t) - center;
         auto parity = floor(position.dot(front)) + floor(position.dot(side));
         if(parity % 2 == 0) 
-            return Intersection(t, planeNormal, colorEven);
+            return Intersection(t, planeNormal, colorEven, 0.6, 0.4);
         else 
-            return Intersection(t, planeNormal, colorOdd);
+            return Intersection(t, planeNormal, colorOdd, 0.6, 0.4);
     }
 }
 
@@ -71,6 +71,6 @@ class Sphere : SceneObject {
         if(t < 0) return NO_INTERSECTION;
 
         Vector!float pos = origin + direction.scale(t);
-        return Intersection(t, ~(pos - center), color, 0.8, 0.0, 0.2,15.0);
+        return Intersection(t, ~(pos - center), color, 0.5, 0.3, 0.2,15.0);
     }
 }
